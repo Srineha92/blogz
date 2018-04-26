@@ -1,0 +1,50 @@
+
+<!doctype html>
+<html>
+    <head>
+        <title>{{title}}</title>
+        <style type="text/css">
+     
+            .error {
+                color: red;
+            }
+            nav #user-account {
+                float: right;
+            }
+            nav ul {
+                padding:0;
+                display: inline-block
+            }
+            nav ul li {
+                list-style: none;
+                display: inline-block;
+                 margin-right: 15px;
+            }
+        </style>     
+    </head>
+    
+    <body>
+        <nav>
+            
+                <nav>
+                        <ul id="user-account">
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/blog">All Posts</a></li>
+                            <li><a href="/newpost">New Post</a></li>
+                        </ul>
+                    </nav>
+                    
+            
+        </nav>
+        
+
+{% block content %}
+{% endblock %}
+    </body>
+</html>
+
+
