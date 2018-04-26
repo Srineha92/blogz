@@ -2,18 +2,18 @@
 
 {% block content %}
 
-<h1>{{ title }}</h1>
-
+<h1>Log In</h1>
+<p class="error">{{ login_error }}</p>
 <form action="/login" method="post">
 
      <label for="username"> Username: </label>
             
-                <input name="username" type="text" value="{{ username }}">
-                <p class= "error"> {{ username_error }} </p>
+                <input name="username" type="text" value="{{ username }}"><br>
+                
             
                 <label for="password"> Password: </label>
-                <input name="password" type="password">
-                <p class= "error"> {{ password_error }} </p>
+                <input name="password" type="password"><br>
+                
         
     <input type="submit" value="Login">
 </form>

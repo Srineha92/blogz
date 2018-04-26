@@ -114,16 +114,14 @@ def login():
         new_user = User.query.filter_by(username=username).first()
 
         if (username == "") or (password == "") :
-            username_error="please fill the title"
-            password_error="please fill the body"
-            return render_template('newpost.html',
-                username=username,password=password,
-                username_error=username_error,passowrd_error=password_error)
+            login_error="Invalid username and password"
+            return render_template('login.html',
+                username=username,password=password,login_error=login_error)
 
         elif new_user and check_pw_hash(password, new_user.pw_hash):
             session['username']=username 
             flash("Logged in")         
-            return redirect('/')
+            return redirect('/newpost')
         else:
             flash('User password incorrect, or user does not exist', 'error')
     
