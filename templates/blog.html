@@ -3,11 +3,13 @@
 {% block content %}
 
 <h1>Blog posts!</h1>
+
         {% for post in posts %}
            
                 
                 <h1>
                     <a href="/blog?id={{ post.id }}" > {{ post.title }}</a>
+
                 </h1>
 
                 <h3>{{ post.body}}</h3>

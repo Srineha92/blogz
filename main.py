@@ -61,7 +61,7 @@ def display_blog():
     posts = Blog.query.order_by(Blog.published_date.desc())
     if (entry_id):
         post = Blog.query.filter_by(id=entry_id).first()
-        return render_template('newpost.html',title="Blog",post=post, posts=posts,
+        return render_template('singlepost.html',title="Blog",post=post, posts=posts,
         published_date=post.published_date, user_id=post.owner_id)
     if (user_id):
         entries=Blog.query.filter_by(owner_id=user_id).all()
@@ -72,8 +72,6 @@ def display_blog():
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
-    title_error = ''
-    body_error = ''
     existing_user = User.query.filter_by(username=session['username']).first()
 
     if request.method == 'POST':
@@ -90,16 +88,20 @@ def newpost():
                 new_title=new_title,
                 new_body=new_body, title_error=title_error,body_error=body_error)
 
-        if ((not title_error) or (not body_error)):
+        if new_entry.is_valid():
             db.session.add(new_entry)
             db.session.commit()
 
             url = "/blog?id=" + str(new_entry.id)
             return redirect(url)
+        else:
+            return render_template('newpost.html',
+                new_title=new_title,
+                new_body=new_body)
 
-    return render_template('newpost.html',title="Create new blog entry",
-                title_error=title_error,body_error=body_error)
-        
+    else: 
+        return render_template('newpost.html')
+
 @app.before_request
 def require_login():
     allowed_routes = ['login','display_blog','index','signup']
@@ -130,24 +132,57 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    username = ''
+    email = ''
+    username_error = ''
+    password_error = ''
+    verify_error = ''
+    email_error = ''
+    title = 'SignUp'
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
-
-    
-        existing_user = User.query.filter_by(username=username).first()
         
-        if not existing_user:
-            new_user = User(username, password)
-            db.session.add(new_user)
-            db.session.commit()
-            session['username'] = new_user.username
-            return redirect("/newpost")
+        if username == " ":
+                username_error = 'Invalid username'
+                username = ''
         else:
-            return "<h1>Invalid user</h1>"    
-    return render_template('signup.html')       
+            if (len(username) < 3) or (len(username) > 20):
+                username_error = 'Invalid username'
+                username = ''
+        if password == " " :
+                password_error = 'Invalid passcode.'
+        else:
+                if (len(password)< 3) or (len(password) > 20):
+                    password_error = 'Invaild password'
+        if not len(password):
+            password_error = 'Invalid password'
+        if (verify.strip()==""):
+             verify_error = 'Passwords do not match.'
+        else:
+            if password != verify:
+                verify_error = 'Passwords do not match.'
+          
+    
+        if (not username_error) and (not password_error) and (not verify_error):
+            
+            existing_user = User.query.filter_by(username=username).first()
+        
+            if not existing_user:
+                new_user = User(username, password)
+                db.session.add(new_user)
+                db.session.commit()
+                session['username'] = username
+                return redirect("/newpost")
+            else:
+                username_error = "username already exits"
 
+            return render_template('signup.html', username=username, username_error=username_error)
+    
+    return render_template('signup.html', title=title, username=username,
+                           username_error=username_error, password_error=password_error,
+                           verify_error=verify_error)
 @app.route('/logout')
 def logout():
 
